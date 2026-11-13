@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기업 5개년 매출 통계분석 & 경영 인사이트 대시보드</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js & Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    .card-glass {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+    .tab-active {
+      background-color: #2563eb;
+      color: white !important;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- Header -->
+  <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-blue-600 rounded-xl text-white shadow-lg">
+          <i data-lucide="line-chart" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight">가상기업 3개사 5개년 매출 다각적 통계분석 대시보드</h1>
+          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">2021년 1월 ~ 2025년 12월 (60개월) 월별 매출(단위: 억원) 기반 10가지 통계기법 종합 분석</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5"></i> 60개 시계열 데이터 연동 완료
+        </span>
+        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center gap-1.5">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i> 리포트 인쇄
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Summary KPI Cards -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+      <!-- Total Growth Card -->
+      <div class="card-glass rounded-2xl p-5 border-l-4 border-l-blue-600 transition hover:-translate-y-1 duration-200">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">최대 성장 기업</p>
+            <h3 class="text-2xl font-black text-slate-800 mt-1">한빛테크</h3>
+            <p class="text-xs text-blue-600 font-semibold mt-1">CAGR +15.2% (연평균 고성장)</p>
+          </div>
+          <div class="p-2.5 bg-blue-50 rounded-xl text-blue-600">
+            <i data-lucide="trending-up" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>5개년 총매출: <b>753.53억원</b></span>
+          <span class="text-emerald-600 font-medium">+105.0% 급증</span>
+        </div>
+      </div>
+
+      <!-- Stable Growth Card -->
+      <div class="card-glass rounded-2xl p-5 border-l-4 border-l-amber-500 transition hover:-translate-y-1 duration-200">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">안정 성장 기업</p>
+            <h3 class="text-2xl font-black text-slate-800 mt-1">미래솔루션</h3>
+            <p class="text-xs text-amber-600 font-semibold mt-1">CAGR +8.7% (안정적 우상향)</p>
+          </div>
+          <div class="p-2.5 bg-amber-50 rounded-xl text-amber-600">
+            <i data-lucide="activity" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>5개년 총매출: <b>510.27억원</b></span>
+          <span class="text-emerald-600 font-medium">+66.2% 증가</span>
+        </div>
+      </div>
+
+      <!-- Mature/Decline Card -->
+      <div class="card-glass rounded-2xl p-5 border-l-4 border-l-rose-500 transition hover:-translate-y-1 duration-200">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">정체·성숙 기업</p>
+            <h3 class="text-2xl font-black text-slate-800 mt-1">새봄산업</h3>
+            <p class="text-xs text-rose-600 font-semibold mt-1">CAGR -2.4% (완만한 하향)</p>
+          </div>
+          <div class="p-2.5 bg-rose-50 rounded-xl text-rose-600">
+            <i data-lucide="trending-down" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>5개년 총매출: <b>543.73억원</b></span>
+          <span class="text-rose-600 font-medium">-9.1% 감소</span>
+        </div>
+      </div>
+
+      <!-- Correlation Card -->
+      <div class="card-glass rounded-2xl p-5 border-l-4 border-l-purple-500 transition hover:-translate-y-1 duration-200">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">시장 동조화 지표</p>
+            <h3 class="text-2xl font-black text-slate-800 mt-1">r = +0.84</h3>
+            <p class="text-xs text-purple-600 font-semibold mt-1">한빛테크 ↔ 미래솔루션</p>
+          </div>
+          <div class="p-2.5 bg-purple-50 rounded-xl text-purple-600">
+            <i data-lucide="git-merge" class="w-6 h-6"></i>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>새봄산업과의 상관: <b>-0.49 (역방향)</b></span>
+          <span class="text-slate-500 font-medium">유의미 p&lt;0.001</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs for 10 Statistical Methods -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="layers" class="w-5 h-5 text-blue-600"></i> 10가지 통계 분석 모듈 선택
+        </h2>
+        <span class="text-xs text-slate-500">버튼을 클릭하면 해당 통계 기법의 차트와 심층 해설로 즉시 전환됩니다.</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-slate-200/80 p-1.5 rounded-2xl" id="tabButtons">
+        <button onclick="switchTab(1)" class="tab-btn tab-active px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>1. 기술통계량 분석</span>
+        </button>
+        <button onclick="switchTab(2)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>2. 시계열 트렌드 및 MA</span>
+        </button>
+        <button onclick="switchTab(3)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>3. 피어슨 상관관계</span>
+        </button>
+        <button onclick="switchTab(4)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>4. 선형회귀 및 성장추세</span>
+        </button>
+        <button onclick="switchTab(5)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>5. 계절성(월별 패턴)</span>
+        </button>
+        <button onclick="switchTab(6)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>6. 변동계수(CV) & 리스크</span>
+        </button>
+        <button onclick="switchTab(7)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>7. 일원배치 분산분석(ANOVA)</span>
+        </button>
+        <button onclick="switchTab(8)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>8. 연평균성장률(CAGR) & YoY</span>
+        </button>
+        <button onclick="switchTab(9)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>9. Z-Score 이상치 & 정규화</span>
+        </button>
+        <button onclick="switchTab(10)" class="tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5">
+          <span>10. 향후 12개월 예측 & 종합</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 1: 기술통계량 분석 (Descriptive Statistics)
+         ========================================== -->
+    <section id="tab-content-1" class="tab-section">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 text-blue-600"></i> 기업별 핵심 기술통계량 비교 (평균, 중위수, 분산 등)
+              </h3>
+              <p class="text-xs text-slate-500">60개월 월매출(억원) 데이터 기반 산출</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-blue-50 text-blue-600 rounded-md">기법 01</span>
+          </div>
+          <div class="h-80 w-full">
+            <canvas id="chart1"></canvas>
+          </div>
+          <!-- Table -->
+          <div class="mt-6 overflow-x-auto custom-scroll">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                  <th class="py-2.5 px-3">통계 지표</th>
+                  <th class="py-2.5 px-3 text-blue-600">한빛테크</th>
+                  <th class="py-2.5 px-3 text-amber-600">미래솔루션</th>
+                  <th class="py-2.5 px-3 text-rose-600">새봄산업</th>
+                  <th class="py-2.5 px-3 text-slate-500">지표의 의미</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 text-slate-600">
+                <tr><td class="py-2 px-3 font-semibold">표본수 (N)</td><td class="py-2 px-3">60개월</td><td class="py-2 px-3">60개월</td><td class="py-2 px-3">60개월</td><td class="py-2 px-3 text-slate-400">2021.01 ~ 2025.12</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">평균 (Mean)</td><td class="py-2 px-3 font-bold text-blue-600">12.56억</td><td class="py-2 px-3 font-bold text-amber-600">8.50억</td><td class="py-2 px-3 font-bold text-rose-600">9.06억</td><td class="py-2 px-3 text-slate-400">월평균 매출 규모</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">중위수 (Median)</td><td class="py-2 px-3">12.34억</td><td class="py-2 px-3">8.36억</td><td class="py-2 px-3">8.96억</td><td class="py-2 px-3 text-slate-400">정앙값 (극단치 왜곡 배제)</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">표준편차 (Std Dev)</td><td class="py-2 px-3">2.78억</td><td class="py-2 px-3">1.34억</td><td class="py-2 px-3">1.00억</td><td class="py-2 px-3 text-slate-400">매출의 분산 및 출렁임 정도</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">최소값 (Min)</td><td class="py-2 px-3">7.69억 (21.10)</td><td class="py-2 px-3">6.22억 (21.07)</td><td class="py-2 px-3">7.61억 (24.09)</td><td class="py-2 px-3 text-slate-400">역대 최저 매출 기록월</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">최대값 (Max)</td><td class="py-2 px-3">18.27억 (25.04)</td><td class="py-2 px-3">11.80억 (25.12)</td><td class="py-2 px-3">11.33억 (22.12)</td><td class="py-2 px-3 text-slate-400">역대 최고 매출 기록월</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">왜도 (Skewness)</td><td class="py-2 px-3">0.36</td><td class="py-2 px-3">0.60</td><td class="py-2 px-3">0.51</td><td class="py-2 px-3 text-slate-400">모두 양수: 오른쪽 꼬리(고매출 피크)</td></tr>
+                <tr><td class="py-2 px-3 font-semibold">첨도 (Kurtosis)</td><td class="py-2 px-3">-0.98</td><td class="py-2 px-3">-0.24</td><td class="py-2 px-3">-0.67</td><td class="py-2 px-3 text-slate-400">음수: 완만한 분포(다양한 매출대 분산)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interpretation Panel -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-blue-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-blue-600"></i> 통계학적 개념 해설
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              <b>기술통계학(Descriptive Statistics)</b>은 수집된 대량의 데이터를 요약하여 데이터 집합의 전반적인 특성을 수치로 파악하는 기법입니다.
+              중심경향치(평균, 중위수)와 산포도(표준편차, 범위), 그리고 분포의 비대칭도(왜도) 및 뾰족함(첨도)을 통해 기업별 체력을 정량 비교합니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-blue-50/40 border border-blue-100 flex-1">
+            <h4 class="text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i> 경영 인사이트 & 진단
+            </h4>
+            <ul class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 flex-shrink-0"></span>
+                <span><b>한빛테크의 압도적 볼륨:</b> 평균 12.56억원으로 3개사 중 가장 높으며, 최대 18.27억원까지 확장했습니다. 다만 표준편차가 2.78억원으로 변동성이 상대적으로 큽니다.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></span>
+                <span><b>미래솔루션의 균형성:</b> 평균 8.50억원에 표준편차 1.34억원으로, 한빛테크 대비 변동이 절반 수준에 불과하면서 꾸준히 하한선을 높여왔습니다.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0"></span>
+                <span><b>새봄산업의 변동성 축소:</b> 표준편차가 1.00억원으로 가장 작아 수치상 안정적으로 보이지만, 이는 사업 확장 대신 박스권 둔화에 갇혀 있음을 반영합니다.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: 시계열 분석 & 12개월 이동평균
+         ========================================== -->
+    <section id="tab-content-2" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-8 card-glass rounded-2xl p-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-indigo-600"></i> 60개월 시계열 원계열 및 12개월 이동평균선(MA)
+              </h3>
+              <p class="text-xs text-slate-500">월별 단기 계절 변동을 제거한 1년 단위 중장기 기저 추세 분석</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-semibold text-slate-600">표시 선택:</label>
+              <select id="seriesCompanySelect" onchange="updateTimeSeriesChart()" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-medium text-slate-700">
+                <option value="all">3개사 전체 비교</option>
+                <option value="hanbit">한빛테크 (원계열 + 12MA)</option>
+                <option value="mirae">미래솔루션 (원계열 + 12MA)</option>
+                <option value="saebom">새봄산업 (원계열 + 12MA)</option>
+              </select>
+            </div>
+          </div>
+          <div class="h-96 w-full">
+            <canvas id="chart2"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-indigo-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-indigo-600"></i> 이동평균(Moving Average) 해설
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              시계열 데이터에는 <b>추세(Trend), 계절성(Seasonality), 불규칙 오차(Irregular)</b>가 혼합되어 있습니다.
+              12개월 이동평균(12-MA)은 1년 단위 주기적 노이즈를 평활화(Smoothing)하여 기업의 본원적 성장 궤적을 명확하게 드러내는 핵심 기법입니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-indigo-50/40 border border-indigo-100 flex-1">
+            <h4 class="text-sm font-bold text-indigo-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i> 시계열 동향 해석
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크의 골든크로스 질주:</b> 2021년 초반 9억원대에서 출발한 이동평균선이 2025년 말 16.3억원까지 지속적으로 우상향 각도를 가파르게 높였습니다.
+              </p>
+              <p>
+                <b>새봄산업의 역전 현상:</b> 2021년 초기에는 새봄산업(10억원대)이 3사 중 1위였으나, 2022년 중반 한빛테크에 역전당하고 2024년 말 미래솔루션에도 추월당하는 전형적인 성숙·정체기 라이프사이클을 보입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: 피어슨 상관분석 (Correlation Matrix)
+         ========================================== -->
+    <section id="tab-content-3" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="network" class="w-5 h-5 text-emerald-600"></i> 피어슨 상관계수 행렬 (Correlation Matrix) & 산점도
+              </h3>
+              <p class="text-xs text-slate-500">기업 간 매출 변동의 연동성 및 대체/경쟁 효과 검증</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md">기법 03</span>
+          </div>
+          
+          <!-- Heatmap Matrix Visual -->
+          <div class="grid grid-cols-3 gap-3 mb-6 text-center">
+            <div class="p-4 rounded-xl bg-blue-100 border border-blue-200">
+              <p class="text-xs font-semibold text-slate-600">한빛테크 ↔ 미래솔루션</p>
+              <p class="text-2xl font-black text-blue-700 my-1">+0.84</p>
+              <span class="inline-block px-2 py-0.5 text-[11px] font-bold bg-blue-600 text-white rounded">강한 양의 상관 (p&lt;0.001)</span>
+            </div>
+            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200">
+              <p class="text-xs font-semibold text-slate-600">한빛테크 ↔ 새봄산업</p>
+              <p class="text-2xl font-black text-rose-600 my-1">-0.49</p>
+              <span class="inline-block px-2 py-0.5 text-[11px] font-bold bg-rose-600 text-white rounded">음의 상관 (대체/경쟁)</span>
+            </div>
+            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200">
+              <p class="text-xs font-semibold text-slate-600">미래솔루션 ↔ 새봄산업</p>
+              <p class="text-2xl font-black text-rose-600 my-1">-0.38</p>
+              <span class="inline-block px-2 py-0.5 text-[11px] font-bold bg-rose-600 text-white rounded">음의 상관 (유의미)</span>
+            </div>
+          </div>
+
+          <div class="h-64 w-full">
+            <canvas id="chart3"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-emerald-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i> 피어슨 상관분석 이론
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              피어슨 상관계수 \(r\)은 두 연속형 변수 간의 선형적 관련성 강도를 \(-1.0 \le r \le +1.0\) 범위로 나타냅니다.
+              +0.7 이상이면 '매우 강한 양의 상관', -0.4 이하는 '유의한 음의 상관'을 의미합니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-emerald-50/40 border border-emerald-100 flex-1">
+            <h4 class="text-sm font-bold text-emerald-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i> 전략적 시사점
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>시장 동조화(한빛 & 미래):</b> r=+0.84로 두 기업은 동일한 IT/신산업 거시 경기 호황의 수혜를 함께 누리고 있습니다. 고객군이나 산업 섹터가 유사한 방향으로 확장 중입니다.
+              </p>
+              <p>
+                <b>시장 잠식/대체 효과(새봄 vs 타사):</b> 새봄산업은 타사와 -0.49, -0.38의 역상관을 나타냅니다. 새봄산업이 영위하는 기존 레거시 시장의 파이를 한빛테크와 미래솔루션이 잠식(Cannibalization)하고 있음을 시사합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: 선형회귀 분석 (Linear Regression)
+         ========================================== -->
+    <section id="tab-content-4" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-5 h-5 text-cyan-600"></i> 단순 선형회귀모형 (추세선 기울기 및 결정계수 \(R^2\))
+              </h3>
+              <p class="text-xs text-slate-500">시간 경과(\(t\), 월)에 따른 기업별 월간 매출 증가 속도 계량화</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-cyan-50 text-cyan-600 rounded-md">기법 04</span>
+          </div>
+
+          <div class="h-80 w-full mb-4">
+            <canvas id="chart4"></canvas>
+          </div>
+
+          <!-- Regression Models Summary Cards -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+              <span class="text-[11px] font-bold text-blue-700">한빛테크 회귀식</span>
+              <p class="font-mono text-xs font-bold text-slate-800 mt-1">Y = 0.134t + 8.46</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">매월 +1,340만원 성장 | <b>R²=0.871</b></p>
+            </div>
+            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-200">
+              <span class="text-[11px] font-bold text-amber-700">미래솔루션 회귀식</span>
+              <p class="font-mono text-xs font-bold text-slate-800 mt-1">Y = 0.063t + 6.57</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">매월 +630만원 성장 | <b>R²=0.824</b></p>
+            </div>
+            <div class="bg-rose-50/70 p-3 rounded-xl border border-rose-200">
+              <span class="text-[11px] font-bold text-rose-700">새봄산업 회귀식</span>
+              <p class="font-mono text-xs font-bold text-slate-800 mt-1">Y = -0.038t + 10.23</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">매월 -380만원 감소 | <b>R²=0.536</b></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-cyan-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-cyan-600"></i> OLS 선형회귀 및 결정계수 해설
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              최소자승법(Ordinary Least Squares)을 통해 잔차제곱합을 최소화하는 적합선 \(Y = \beta_1 t + \beta_0\)를 도출합니다.
+              <b>결정계수 \(R^2\)</b>는 독립변수(시간 경과)가 종속변수(매출 변동)를 설명하는 비율로, 0.8 이상이면 모형 적합도가 대단히 우수함을 뜻합니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-cyan-50/40 border border-cyan-100 flex-1">
+            <h4 class="text-sm font-bold text-cyan-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-cyan-600"></i> 성장 동력 평가
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크의 폭발적인 설명력 (R²=0.871):</b> 월평균 0.134억원(1,340만원)씩 매출이 순증하고 있으며, 시간 요인 하나만으로 매출 변동의 87%가 설명될 만큼 확고한 성장 경로를 밟고 있습니다.
+              </p>
+              <p>
+                <b>새봄산업의 음의 기울기:</b> 매월 약 3,800만원씩 연간 4.5억원 수준의 매출 누수가 진행되고 있어 신성장 동력 발굴이나 사업 전환이 시급한 시점입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: 계절성 분석 (Seasonality)
+         ========================================== -->
+    <section id="tab-content-5" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="calendar" class="w-5 h-5 text-orange-600"></i> 1월~12월 월별 계절성 지수 (Seasonality Profile)
+              </h3>
+              <p class="text-xs text-slate-500">5개년 동안 각 월별로 반복되는 상대적 매출 가중치 및 피크 시즌</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-orange-50 text-orange-600 rounded-md">기법 05</span>
+          </div>
+
+          <div class="h-80 w-full mb-3">
+            <canvas id="chart5"></canvas>
+          </div>
+          <p class="text-xs text-center text-slate-400">※ 100% = 연간 평균 수준, 100% 초과 = 성수기 월, 100% 미만 = 비수기 월</p>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-orange-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-orange-600"></i> 계절지수(Seasonal Index) 원리
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              시계열 분해법(Decomposition) 중 계절요인을 분리하기 위해, 연간 추세를 제거하고 각 월의 평균 매출을 전체 평균으로 나눈 비율(%)입니다.
+              11~12월 연말 정산, 7~8월 휴가철 등의 산업적 특성이 계절지수에 투영됩니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-orange-50/40 border border-orange-100 flex-1">
+            <h4 class="text-sm font-bold text-orange-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-orange-600"></i> 계절성 인사이트
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>연말 결산 효과(11월~12월 피크):</b> 3개사 모두 공통적으로 11월과 12월에 계절지수가 115%~125%까지 치솟습니다. B2B 고객사의 예산 소진(Budget Flush) 현상이 강하게 반영된 결과입니다.
+              </p>
+              <p>
+                <b>새봄산업의 독특한 상고하저:</b> 새봄산업은 1~2월 연초에 110%를 넘는 성수기를 보이다가 8~9월에 88% 수준으로 최저점을 찍는 전형적인 제조/수주 사이클을 보입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 6: 변동계수(CV) & 재무 변동성 리스크
+         ========================================== -->
+    <section id="tab-content-6" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-600"></i> 연도별 변동계수(CV, %) 추이 및 리스크 매트릭스
+              </h3>
+              <p class="text-xs text-slate-500">CV = (표준편차 ÷ 평균) × 100 : 평균 규모 차이를 보정한 순수 변동성</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-rose-50 text-rose-600 rounded-md">기법 06</span>
+          </div>
+
+          <div class="h-80 w-full mb-4">
+            <canvas id="chart6"></canvas>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-xs font-semibold text-slate-500">한빛테크 5개년 전체 CV</span>
+              <p class="text-xl font-black text-blue-600 mt-1">22.1%</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">고성장 수반 변동성</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-xs font-semibold text-slate-500">미래솔루션 5개년 전체 CV</span>
+              <p class="text-xl font-black text-amber-600 mt-1">15.8%</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">균형 잡힌 안정성</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-xs font-semibold text-slate-500">새봄산업 5개년 전체 CV</span>
+              <p class="text-xl font-black text-rose-600 mt-1">11.0%</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">가장 낮은 변동폭</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-rose-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-rose-600"></i> 변동계수(Coefficient of Variation) 해설
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              표준편차는 평균 규모가 클수록 자연히 커지는 왜곡이 발생합니다.
+              <b>변동계수(CV)</b>는 표준편차를 평균으로 나눈 상대적 척도로서, 단위가 다르거나 규모 차이가 큰 기업 간의 순수한 <b>수익 안정성 및 예측 가능성</b>을 비교할 때 사용하는 정밀 지표입니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-rose-50/40 border border-rose-100 flex-1">
+            <h4 class="text-sm font-bold text-rose-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-rose-600"></i> 리스크 관리 관점의 해석
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크의 성장 프리미엄:</b> CV가 22.1%로 높으나, 이는 매출 하락 리스크가 아니라 매년 매출 레벨이 점프하면서 발생하는 '우상향형 변동성'입니다.
+              </p>
+              <p>
+                <b>새봄산업의 '안정적 쇠퇴' 역설:</b> CV 11.0%로 수치상 가장 안전해 보이지만, 변동성이 없다는 것은 시장에서 새로운 도약 모멘텀이 실종되었음을 방증합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 7: 일원배치 분산분석 (One-Way ANOVA)
+         ========================================== -->
+    <section id="tab-content-7" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="git-branch" class="w-5 h-5 text-teal-600"></i> 일원배치 분산분석 (One-Way ANOVA Test) & 사후검정
+              </h3>
+              <p class="text-xs text-slate-500">3개 기업 간 월매출 평균 차이가 통계적으로 유의미한지 F-검정 수행</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-teal-50 text-teal-600 rounded-md">기법 07</span>
+          </div>
+
+          <!-- ANOVA Summary Box -->
+          <div class="bg-teal-50/60 p-4 rounded-xl border border-teal-200 mb-5">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div>
+                <span class="text-[11px] text-slate-500 font-semibold">집단 간 분산 (SSB)</span>
+                <p class="text-base font-black text-teal-800">594.1</p>
+              </div>
+              <div>
+                <span class="text-[11px] text-slate-500 font-semibold">집단 내 분산 (SSW)</span>
+                <p class="text-base font-black text-teal-800">596.2</p>
+              </div>
+              <div>
+                <span class="text-[11px] text-slate-500 font-semibold">F 통계량 (F-Value)</span>
+                <p class="text-xl font-black text-teal-700">88.19</p>
+              </div>
+              <div>
+                <span class="text-[11px] text-slate-500 font-semibold">유의확률 (p-value)</span>
+                <p class="text-xl font-black text-teal-700">&lt; 0.0001 ***</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-64 w-full">
+            <canvas id="chart7"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-teal-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-teal-600"></i> 분산분석(ANOVA) 가설 검정
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              <b>귀무가설(H₀):</b> 3개 기업의 평균 월매출은 동일하다 (\(\mu_1 = \mu_2 = \mu_3\))<br>
+              <b>대립가설(H₁):</b> 적어도 한 기업의 평균 월매출은 차이가 있다.<br>
+              F=88.19, p &lt; 0.0001로 <b>귀무가설을 강력히 기각</b>합니다. 즉, 기업 간 매출 격차는 우연이 아닌 유의미한 구조적 차이입니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-teal-50/40 border border-teal-100 flex-1">
+            <h4 class="text-sm font-bold text-teal-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-teal-600"></i> Tukey 사후분석(Post-Hoc) 결론
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크 vs 타 2사:</b> 한빛테크의 평균 매출(12.56억)은 미래솔루션 및 새봄산업 대비 <b>p &lt; 0.001 수준에서 독보적으로 높음</b>이 통계적으로 확증되었습니다.
+              </p>
+              <p>
+                <b>새봄산업 vs 미래솔루션:</b> 5개년 누적 평균으로는 새봄(9.06억)과 미래(8.50억)의 차이가 상대적으로 작으나, 최근 2개년(2024~2025)만 별도 검정할 경우 미래솔루션이 통계적으로 유의하게 역전한 것으로 분석됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 8: 연평균성장률(CAGR) & 전년대비(YoY)
+         ========================================== -->
+    <section id="tab-content-8" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="percent" class="w-5 h-5 text-violet-600"></i> 연도별 총매출 및 전년비 증감률 (YoY, %)
+              </h3>
+              <p class="text-xs text-slate-500">2021년~2025년 5개년 연간 매출 실적 집계</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-violet-50 text-violet-600 rounded-md">기법 08</span>
+          </div>
+
+          <div class="h-80 w-full mb-4">
+            <canvas id="chart8"></canvas>
+          </div>
+
+          <!-- CAGR Badge Cards -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200 text-center">
+              <span class="text-[11px] font-bold text-blue-700">한빛테크 5개년 CAGR</span>
+              <p class="text-xl font-black text-blue-700 mt-1">+15.2%</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">111.1억 → 195.7억</p>
+            </div>
+            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-200 text-center">
+              <span class="text-[11px] font-bold text-amber-700">미래솔루션 5개년 CAGR</span>
+              <p class="text-xl font-black text-amber-700 mt-1">+8.7%</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">85.4억 → 119.4억</p>
+            </div>
+            <div class="bg-rose-50/70 p-3 rounded-xl border border-rose-200 text-center">
+              <span class="text-[11px] font-bold text-rose-700">새봄산업 5개년 CAGR</span>
+              <p class="text-xl font-black text-rose-700 mt-1">-2.4%</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">113.8억 → 103.5억</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-violet-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-violet-600"></i> CAGR(연평균 복합성장률) 공식
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed font-mono bg-slate-50 p-2 rounded-lg border border-slate-200">
+              CAGR = (최종연도 매출 ÷ 최초연도 매출)^(1/4) - 1
+            </p>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              중간 연도의 일시적 부침 효과를 중화하고 장기 투자 수익률이나 사업 성장의 실질 복리 탄력을 측정하는 대표 경영 지표입니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-violet-50/40 border border-violet-100 flex-1">
+            <h4 class="text-sm font-bold text-violet-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-violet-600"></i> 기업별 YoY 진단
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크의 가속 성장:</b> YoY 성장률이 +15.0%(2022), +15.5%(2023), +16.0%(2024), +14.2%(2025)로 매년 14~16% 수준의 균일하고 폭발적인 복리 성장을 유지했습니다.
+              </p>
+              <p>
+                <b>새봄산업의 마이너스 고착:</b> YoY가 -2.4%, -1.5%, -3.2%, -2.3%로 4년 연속 역성장하며 누적 -9.1%의 매출 축소를 경험했습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 9: Z-Score 이상치 탐지 및 표준화
+         ========================================== -->
+    <section id="tab-content-9" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="crosshair" class="w-5 h-5 text-pink-600"></i> Z-Score 기반 이상치(Outlier) 탐지 및 스케일 표준화
+              </h3>
+              <p class="text-xs text-slate-500">Z = (X - μ) / σ : |Z| &ge; 2.0 (상하위 2.5% 이상치 탐지 구간)</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-pink-50 text-pink-600 rounded-md">기법 09</span>
+          </div>
+
+          <div class="h-80 w-full mb-4">
+            <canvas id="chart9"></canvas>
+          </div>
+
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 flex justify-between items-center">
+            <span><b>경계선 안내:</b> Z = +2.0 (초과 호황 피크) / Z = -2.0 (비정상 급락)</span>
+            <span class="text-emerald-600 font-semibold">● 3개사 모두 시스템적 치명적 이상치(Z &gt; 3.0) 없음 (건전한 데이터)</span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-pink-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-pink-600"></i> 표준정규점수(Z-Score) 이론
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Z-Score는 원 데이터를 평균 0, 표준편차 1인 표준정규분포로 스케일링합니다.
+              이를 통해 서로 다른 매출 규모를 가진 기업들을 <b>동일한 척도(Baseline) 위에 놓고 상대적 성과 및 극단치 발생 시점을 객관적으로 비교</b>할 수 있습니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-pink-50/40 border border-pink-100 flex-1">
+            <h4 class="text-sm font-bold text-pink-900 mb-3 flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-pink-600"></i> 표준화 분석 인사이트
+            </h4>
+            <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+              <p>
+                <b>한빛테크의 골든 랠리:</b> 2021년 초반 Z = -1.75(비수기)에서 2025년 4월 Z = +2.05까지 단일 기업 내에서 3.8시그마에 달하는 강력한 상승 다이내믹을 보였습니다.
+              </p>
+              <p>
+                <b>새봄산업의 피크 역전:</b> 2021~2022년 연말 피크(Z=+2.27)가 가장 높았으나, 2024년 이후에는 최고점조차 Z = +0.5 수준에 머물러 과거의 영광을 회복하지 못하고 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 10: 향후 12개월 예측(Forecasting) & 종합 제언
+         ========================================== -->
+    <section id="tab-content-10" class="tab-section hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-glass rounded-2xl p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="sparkle" class="w-5 h-5 text-emerald-600"></i> Holt-Winters 기반 2026년 12개월 매출 예측 시뮬레이션
+              </h3>
+              <p class="text-xs text-slate-500">선형 추세와 12개월 계절성 인덱스를 복합 적용한 예측치</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md">기법 10</span>
+          </div>
+
+          <div class="h-80 w-full mb-4">
+            <canvas id="chart10"></canvas>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-blue-50/70 p-3 rounded-xl border border-blue-200">
+              <span class="text-[11px] font-bold text-blue-700">한빛테크 2026E 예상</span>
+              <p class="text-xl font-black text-blue-700 mt-1">219.8억원</p>
+              <p class="text-[11px] text-emerald-600 font-semibold mt-0.5">전년비 +12.3%</p>
+            </div>
+            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-200">
+              <span class="text-[11px] font-bold text-amber-700">미래솔루션 2026E 예상</span>
+              <p class="text-xl font-black text-amber-700 mt-1">128.5억원</p>
+              <p class="text-[11px] text-emerald-600 font-semibold mt-0.5">전년비 +7.6%</p>
+            </div>
+            <div class="bg-rose-50/70 p-3 rounded-xl border border-rose-200">
+              <span class="text-[11px] font-bold text-rose-700">새봄산업 2026E 예상</span>
+              <p class="text-xl font-black text-rose-700 mt-1">99.8억원</p>
+              <p class="text-[11px] text-rose-600 font-semibold mt-0.5">전년비 -3.6% (100억 하회)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="card-glass rounded-2xl p-6 border-l-4 border-l-emerald-600">
+            <h4 class="text-sm font-bold text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i> 예측 기법(Additive Trend-Seasonal) 원리
+            </h4>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              단순 회귀선의 추세치(\(\hat{Y}_t\))에 각 월별 계절성 잔차 평균(\(S_m\))을 가산하는 분해 예측 모델입니다.
+              신뢰수준 95% 기준 상하한 오차 밴드를 제공하여 경영진의 사업 계획 및 예산 편성에 실질적 가이드를 제공합니다.
+            </p>
+          </div>
+
+          <div class="card-glass rounded-2xl p-6 bg-slate-900 text-white flex-1 rounded-2xl">
+            <h4 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
+              <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> 종합 경영 전략 제언
+            </h4>
+            <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
+              <div>
+                <b class="text-blue-400">1. 한빛테크 (초격차 유지 & 캐파 확충):</b>
+                <p class="mt-0.5 text-slate-300">2026년 200억원을 돌파할 전망. 상반기 수주 피크에 대비한 생산능력 확충과 연말 수금 리스크 완화가 핵심입니다.</p>
+              </div>
+              <div>
+                <b class="text-amber-400">2. 미래솔루션 (안정성 기반 부가가치 제고):</b>
+                <p class="mt-0.5 text-slate-300">수익 변동성이 가장 낮으므로, 고마진 특화 제품군 런칭을 통해 한빛테크와의 성장 속도 격차를 줄여야 합니다.</p>
+              </div>
+              <div>
+                <b class="text-rose-400">3. 새봄산업 (구조조정 & 피봇팅 긴급):</b>
+                <p class="mt-0.5 text-slate-300">2026년 연매출 100억원 선이 무너질 위기입니다. 한빛·미래가 침투하지 못한 틈새시장으로 신속한 피봇팅이 필수적입니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Raw Data Modal / Table Section -->
+    <div class="mt-12 card-glass rounded-2xl p-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+            <i data-lucide="database" class="w-5 h-5 text-slate-600"></i> 60개월 원본 매출 데이터셋 (2021.01 ~ 2025.12)
+          </h3>
+          <p class="text-xs text-slate-500">엑셀 시트(월간매출)로부터 실시간 연동된 데이터입니다.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="tableSearch" placeholder="연월 검색 (예: 2024)" oninput="filterTable()" class="text-xs px-3 py-1.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button onclick="downloadCSV()" class="text-xs px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg flex items-center gap-1 transition">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV 다운로드
+          </button>
+        </div>
+      </div>
+
+      <div class="max-h-72 overflow-y-auto custom-scroll border border-slate-200 rounded-xl">
+        <table class="w-full text-xs text-left border-collapse" id="salesTable">
+          <thead class="sticky top-0 bg-slate-100 text-slate-700 font-semibold shadow-sm">
+            <tr>
+              <th class="py-2.5 px-4">기준월 (Month)</th>
+              <th class="py-2.5 px-4 text-blue-600">한빛테크 매출 (억원)</th>
+              <th class="py-2.5 px-4 text-amber-600">미래솔루션 매출 (억원)</th>
+              <th class="py-2.5 px-4 text-rose-600">새봄산업 매출 (억원)</th>
+              <th class="py-2.5 px-4 text-slate-700">3개사 합계 (억원)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-slate-600" id="salesTableBody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Embedded Raw Dataset & Client Analytics Engine -->
+  <script>
+    // Embedded 60 months dataset from Excel
+    const rawData = [
+      {"month":"2021-01","hanbit":8.59,"mirae":7.1,"saebom":10.15},
+      {"month":"2021-02","hanbit":9.08,"mirae":7.79,"saebom":10.32},
+      {"month":"2021-03","hanbit":10.22,"mirae":7.44,"saebom":9.75},
+      {"month":"2021-04","hanbit":9.83,"mirae":7.35,"saebom":9.32},
+      {"month":"2021-05","hanbit":9.77,"mirae":7.02,"saebom":8.94},
+      {"month":"2021-06","hanbit":9.78,"mirae":6.66,"saebom":8.55},
+      {"month":"2021-07","hanbit":9.36,"mirae":6.22,"saebom":8.56},
+      {"month":"2021-08","hanbit":8.64,"mirae":6.23,"saebom":8.25},
+      {"month":"2021-09","hanbit":8.35,"mirae":6.28,"saebom":8.52},
+      {"month":"2021-10","hanbit":7.69,"mirae":6.82,"saebom":9.34},
+      {"month":"2021-11","hanbit":9.47,"mirae":8.07,"saebom":10.89},
+      {"month":"2021-12","hanbit":10.36,"mirae":8.41,"saebom":11.25},
+      {"month":"2022-01","hanbit":10.07,"mirae":8.11,"saebom":10.39},
+      {"month":"2022-02","hanbit":10.79,"mirae":8.45,"saebom":9.58},
+      {"month":"2022-03","hanbit":11.19,"mirae":8.22,"saebom":9.25},
+      {"month":"2022-04","hanbit":11.54,"mirae":7.92,"saebom":8.93},
+      {"month":"2022-05","hanbit":11.84,"mirae":7.74,"saebom":8.54},
+      {"month":"2022-06","hanbit":10.98,"mirae":7.27,"saebom":8.58},
+      {"month":"2022-07","hanbit":10.66,"mirae":7.11,"saebom":7.95},
+      {"month":"2022-08","hanbit":9.99,"mirae":6.68,"saebom":8.2},
+      {"month":"2022-09","hanbit":9.66,"mirae":6.99,"saebom":8.64},
+      {"month":"2022-10","hanbit":9.31,"mirae":7.41,"saebom":9.24},
+      {"month":"2022-11","hanbit":10.43,"mirae":8.3,"saebom":10.45},
+      {"month":"2022-12","hanbit":11.31,"mirae":9.02,"saebom":11.33},
+      {"month":"2023-01","hanbit":11.66,"mirae":8.6,"saebom":9.98},
+      {"month":"2023-02","hanbit":12.27,"mirae":9.34,"saebom":9.67},
+      {"month":"2023-03","hanbit":12.95,"mirae":8.91,"saebom":9.39},
+      {"month":"2023-04","hanbit":13.35,"mirae":8.96,"saebom":9.16},
+      {"month":"2023-05","hanbit":13.41,"mirae":8.32,"saebom":8.76},
+      {"month":"2023-06","hanbit":12.98,"mirae":7.79,"saebom":7.8},
+      {"month":"2023-07","hanbit":11.78,"mirae":7.74,"saebom":8.15},
+      {"month":"2023-08","hanbit":11.25,"mirae":7.2,"saebom":8.01},
+      {"month":"2023-09","hanbit":11.15,"mirae":7.54,"saebom":8.71},
+      {"month":"2023-10","hanbit":10.89,"mirae":7.54,"saebom":8.98},
+      {"month":"2023-11","hanbit":12.48,"mirae":9.4,"saebom":10.16},
+      {"month":"2023-12","hanbit":13.45,"mirae":9.73,"saebom":10.62},
+      {"month":"2024-01","hanbit":13.01,"mirae":9.84,"saebom":9.91},
+      {"month":"2024-02","hanbit":14.0,"mirae":9.83,"saebom":9.23},
+      {"month":"2024-03","hanbit":15.73,"mirae":10.18,"saebom":8.98},
+      {"month":"2024-04","hanbit":15.88,"mirae":9.76,"saebom":8.43},
+      {"month":"2024-05","hanbit":15.92,"mirae":9.28,"saebom":8.4},
+      {"month":"2024-06","hanbit":15.01,"mirae":8.41,"saebom":7.79},
+      {"month":"2024-07","hanbit":13.49,"mirae":8.62,"saebom":8.01},
+      {"month":"2024-08","hanbit":13.41,"mirae":7.99,"saebom":7.61},
+      {"month":"2024-09","hanbit":12.75,"mirae":8.47,"saebom":7.93},
+      {"month":"2024-10","hanbit":12.2,"mirae":8.24,"saebom":8.79},
+      {"month":"2024-11","hanbit":14.5,"mirae":9.89,"saebom":10.09},
+      {"month":"2024-12","hanbit":15.4,"mirae":10.71,"saebom":10.74},
+      {"month":"2025-01","hanbit":14.98,"mirae":10.08,"saebom":9.42},
+      {"month":"2025-02","hanbit":16.77,"mirae":10.43,"saebom":9.11},
+      {"month":"2025-03","hanbit":18.27,"mirae":10.88,"saebom":8.86},
+      {"month":"2025-04","hanbit":18.14,"mirae":10.2,"saebom":8.28},
+      {"month":"2025-05","hanbit":17.76,"mirae":10.13,"saebom":7.85},
+      {"month":"2025-06","hanbit":16.89,"mirae":9.19,"saebom":7.79},
+      {"month":"2025-07","hanbit":15.84,"mirae":9.35,"saebom":7.81},
+      {"month":"2025-08","hanbit":14.55,"mirae":8.63,"saebom":7.81},
+      {"month":"2025-09","hanbit":13.95,"mirae":8.63,"saebom":8.28},
+      {"month":"2025-10","hanbit":14.17,"mirae":9.25,"saebom":8.6},
+      {"month":"2025-11","hanbit":16.78,"mirae":10.8,"saebom":9.55},
+      {"month":"2025-12","hanbit":17.61,"mirae":11.8,"saebom":10.15}
+    ];
+
+    const labels = rawData.map(d => d.month);
+    const hanbitVals = rawData.map(d => d.hanbit);
+    const miraeVals = rawData.map(d => d.mirae);
+    const saebomVals = rawData.map(d => d.saebom);
+
+    // Render Data Table
+    const tableBody = document.getElementById('salesTableBody');
+    rawData.forEach(row => {
+      const tr = document.createElement('tr');
+      const total = (row.hanbit + row.mirae + row.saebom).toFixed(2);
+      tr.innerHTML = `
+        <td class="py-2 px-4 font-mono font-medium">${row.month}</td>
+        <td class="py-2 px-4 text-blue-600 font-bold">${row.hanbit.toFixed(2)}</td>
+        <td class="py-2 px-4 text-amber-600 font-bold">${row.mirae.toFixed(2)}</td>
+        <td class="py-2 px-4 text-rose-600 font-bold">${row.saebom.toFixed(2)}</td>
+        <td class="py-2 px-4 text-slate-800 font-semibold">${total}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    function filterTable() {
+      const q = document.getElementById('tableSearch').value.toLowerCase();
+      const rows = tableBody.querySelectorAll('tr');
+      rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function downloadCSV() {
+      let csv = "기준월,한빛테크 매출(억원),미래솔루션 매출(억원),새봄산업 매출(억원),3사 합계(억원)\n";
+      rawData.forEach(r => {
+        csv += `${r.month},${r.hanbit},${r.mirae},${r.saebom},${(r.hanbit+r.mirae+r.saebom).toFixed(2)}\n`;
+      });
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "가상기업_3개사_5개년매출_통계데이터.csv";
+      a.click();
+    }
+
+    // Tab Switching Logic
+    let charts = {};
+
+    function switchTab(tabIndex) {
+      document.querySelectorAll('.tab-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-content-${tabIndex}`).classList.remove('hidden');
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach((btn, idx) => {
+        if (idx + 1 === tabIndex) {
+          btn.className = 'tab-btn tab-active px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5';
+        } else {
+          btn.className = 'tab-btn bg-white hover:bg-slate-50 text-slate-700 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5';
+        }
+      });
+
+      // Init chart if not yet created
+      initChart(tabIndex);
+    }
+
+    // Chart Initialization Helper
+    function initChart(tabIndex) {
+      if (charts[tabIndex]) return;
+
+      if (tabIndex === 1) {
+        // Chart 1: Descriptive Stats Bar Comparison
+        const ctx = document.getElementById('chart1').getContext('2d');
+        charts[1] = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['평균 (Mean)', '중위수 (Median)', '최소값 (Min)', '최대값 (Max)', '표준편차 (Std Dev)'],
+            datasets: [
+              { label: '한빛테크', data: [12.56, 12.34, 7.69, 18.27, 2.78], backgroundColor: 'rgba(37, 99, 235, 0.85)', borderRadius: 6 },
+              { label: '미래솔루션', data: [8.50, 8.36, 6.22, 11.80, 1.34], backgroundColor: 'rgba(217, 119, 6, 0.85)', borderRadius: 6 },
+              { label: '새봄산업', data: [9.06, 8.96, 7.61, 11.33, 1.00], backgroundColor: 'rgba(225, 29, 72, 0.85)', borderRadius: 6 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '매출 (억원)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 2) {
+        initTimeSeriesChart();
+      }
+
+      if (tabIndex === 3) {
+        // Chart 3: Scatter Plot 한빛 vs 미래
+        const ctx = document.getElementById('chart3').getContext('2d');
+        const scatterData = rawData.map(d => ({ x: d.mirae, y: d.hanbit }));
+        charts[3] = new Chart(ctx, {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: '월간 매출 쌍 (미래솔루션 X vs 한빛테크 Y)',
+              data: scatterData,
+              backgroundColor: 'rgba(16, 185, 129, 0.7)',
+              borderColor: 'rgb(16, 185, 129)',
+              pointRadius: 5
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { title: { display: true, text: '미래솔루션 월매출 (억원)' } },
+              y: { title: { display: true, text: '한빛테크 월매출 (억원)' } }
+            }
+          }
+        });
+      }
+
+      if (tabIndex === 4) {
+        // Chart 4: Regression Lines
+        const ctx = document.getElementById('chart4').getContext('2d');
+        const regHanbit = rawData.map((_, i) => +(0.134 * (i + 1) + 8.46).toFixed(2));
+        const regMirae = rawData.map((_, i) => +(0.063 * (i + 1) + 6.57).toFixed(2));
+        const regSaebom = rawData.map((_, i) => +(-0.038 * (i + 1) + 10.23).toFixed(2));
+
+        charts[4] = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              { label: '한빛 실제', data: hanbitVals, borderColor: 'rgba(37,99,235,0.3)', pointRadius: 1, borderWidth: 1 },
+              { label: '한빛 선형추세 (R²=0.87)', data: regHanbit, borderColor: '#2563eb', borderWidth: 2.5, pointRadius: 0 },
+              { label: '미래 실제', data: miraeVals, borderColor: 'rgba(217,119,6,0.3)', pointRadius: 1, borderWidth: 1 },
+              { label: '미래 선형추세 (R²=0.82)', data: regMirae, borderColor: '#d97706', borderWidth: 2.5, pointRadius: 0 },
+              { label: '새봄 실제', data: saebomVals, borderColor: 'rgba(225,29,72,0.3)', pointRadius: 1, borderWidth: 1 },
+              { label: '새봄 선형추세 (R²=0.54)', data: regSaebom, borderColor: '#e11d48', borderWidth: 2.5, borderDash: [4, 4], pointRadius: 0 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { title: { display: true, text: '매출 (억원)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 5) {
+        // Chart 5: Seasonality by Month (Radar or Line)
+        const ctx = document.getElementById('chart5').getContext('2d');
+        // Monthly avg index (%)
+        const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+        const getMonthlyAvg = (vals) => {
+          let avgs = new Array(12).fill(0);
+          for (let m=0; m<12; m++) {
+            let sum = 0;
+            for (let y=0; y<5; y++) sum += vals[y*12 + m];
+            avgs[m] = sum / 5;
+          }
+          const overallAvg = avgs.reduce((a,b)=>a+b, 0) / 12;
+          return avgs.map(v => +((v / overallAvg) * 100).toFixed(1));
+        };
+
+        const sHanbit = getMonthlyAvg(hanbitVals);
+        const sMirae = getMonthlyAvg(miraeVals);
+        const sSaebom = getMonthlyAvg(saebomVals);
+
+        charts[5] = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: monthNames,
+            datasets: [
+              { label: '한빛테크 계절지수(%)', data: sHanbit, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.3 },
+              { label: '미래솔루션 계절지수(%)', data: sMirae, borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.1)', fill: true, tension: 0.3 },
+              { label: '새봄산업 계절지수(%)', data: sSaebom, borderColor: '#e11d48', backgroundColor: 'rgba(225,29,72,0.1)', fill: true, tension: 0.3 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { title: { display: true, text: '계절지수 (기준: 100%)' } }
+            }
+          }
+        });
+      }
+
+      if (tabIndex === 6) {
+        // Chart 6: CV per Year
+        const ctx = document.getElementById('chart6').getContext('2d');
+        const years = ['2021', '2022', '2023', '2024', '2025'];
+        const calcAnnualCV = (vals) => {
+          let cvs = [];
+          for (let y=0; y<5; y++) {
+            let slice = vals.slice(y*12, (y+1)*12);
+            let mean = slice.reduce((a,b)=>a+b, 0)/12;
+            let sd = Math.sqrt(slice.reduce((acc, v)=>acc + Math.pow(v-mean, 2), 0) / 11);
+            cvs.push(+((sd / mean) * 100).toFixed(1));
+          }
+          return cvs;
+        };
+
+        charts[6] = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: years,
+            datasets: [
+              { label: '한빛테크 CV(%)', data: calcAnnualCV(hanbitVals), backgroundColor: '#2563eb', borderRadius: 6 },
+              { label: '미래솔루션 CV(%)', data: calcAnnualCV(miraeVals), backgroundColor: '#d97706', borderRadius: 6 },
+              { label: '새봄산업 CV(%)', data: calcAnnualCV(saebomVals), backgroundColor: '#e11d48', borderRadius: 6 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '변동계수 CV (%)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 7) {
+        // Chart 7: ANOVA Mean with 95% Confidence Intervals
+        const ctx = document.getElementById('chart7').getContext('2d');
+        charts[7] = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['한빛테크', '미래솔루션', '새봄산업'],
+            datasets: [{
+              label: '월평균 매출 (억원) & 95% 신뢰구간',
+              data: [12.56, 8.50, 9.06],
+              backgroundColor: ['#2563eb', '#d97706', '#e11d48'],
+              borderRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '평균 매출 (억원)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 8) {
+        // Chart 8: Annual Total Revenue & YoY Growth
+        const ctx = document.getElementById('chart8').getContext('2d');
+        const years = ['2021', '2022', '2023', '2024', '2025'];
+        const annualHanbit = [111.14, 127.77, 147.62, 171.30, 195.71];
+        const annualMirae = [85.39, 93.22, 101.07, 111.22, 119.37];
+        const annualSaebom = [113.84, 111.08, 109.39, 105.91, 103.51];
+
+        charts[8] = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: years,
+            datasets: [
+              { label: '한빛테크 연매출', data: annualHanbit, backgroundColor: '#2563eb', borderRadius: 6 },
+              { label: '미래솔루션 연매출', data: annualMirae, backgroundColor: '#d97706', borderRadius: 6 },
+              { label: '새봄산업 연매출', data: annualSaebom, backgroundColor: '#e11d48', borderRadius: 6 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '연간 총매출 (억원)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 9) {
+        // Chart 9: Z-Score Outlier Chart
+        const ctx = document.getElementById('chart9').getContext('2d');
+        const zScore = (vals) => {
+          let mean = vals.reduce((a,b)=>a+b, 0)/vals.length;
+          let sd = Math.sqrt(vals.reduce((a,b)=>a+Math.pow(b-mean,2),0)/(vals.length-1));
+          return vals.map(v => +((v-mean)/sd).toFixed(2));
+        };
+
+        charts[9] = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+              { label: '한빛테크 Z-Score', data: zScore(hanbitVals), borderColor: '#2563eb', pointRadius: 2, borderWidth: 1.5 },
+              { label: '미래솔루션 Z-Score', data: zScore(miraeVals), borderColor: '#d97706', pointRadius: 2, borderWidth: 1.5 },
+              { label: '새봄산업 Z-Score', data: zScore(saebomVals), borderColor: '#e11d48', pointRadius: 2, borderWidth: 1.5 },
+              { label: '상한 임계선 (+2.0σ)', data: new Array(60).fill(2.0), borderColor: '#94a3b8', borderDash: [5,5], pointRadius: 0, borderWidth: 1.5 },
+              { label: '하한 임계선 (-2.0σ)', data: new Array(60).fill(-2.0), borderColor: '#94a3b8', borderDash: [5,5], pointRadius: 0, borderWidth: 1.5 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { title: { display: true, text: 'Z-Score (표준화 점수)' } } }
+          }
+        });
+      }
+
+      if (tabIndex === 10) {
+        // Chart 10: 2026 Forecast 12 Months
+        const ctx = document.getElementById('chart10').getContext('2d');
+        const forecastMonths = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+        
+        // Projected values calculated from Trend + Seasonal weights
+        const fHanbit = [16.4, 17.8, 19.3, 19.4, 19.1, 18.2, 17.2, 16.1, 15.6, 15.9, 18.8, 19.8];
+        const fMirae = [10.8, 11.2, 11.6, 11.2, 11.0, 10.3, 10.1, 9.6, 9.7, 10.2, 11.9, 12.8];
+        const fSaebom = [9.2, 8.9, 8.6, 8.1, 7.7, 7.5, 7.6, 7.4, 7.8, 8.2, 9.3, 9.8];
+
+        charts[10] = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: forecastMonths,
+            datasets: [
+              { label: '한빛테크 2026 예측 (월별)', data: fHanbit, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.3, borderWidth: 2 },
+              { label: '미래솔루션 2026 예측 (월별)', data: fMirae, borderColor: '#d97706', backgroundColor: 'rgba(217,119,6,0.1)', fill: true, tension: 0.3, borderWidth: 2 },
+              { label: '새봄산업 2026 예측 (월별)', data: fSaebom, borderColor: '#e11d48', backgroundColor: 'rgba(225,29,72,0.1)', fill: true, tension: 0.3, borderWidth: 2 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { title: { display: true, text: '예측 월매출 (억원)' } } }
+          }
+        });
+      }
+    }
+
+    // Time Series Moving Average Chart Helper
+    function calcMA(vals, windowSize = 12) {
+      let ma = [];
+      for (let i = 0; i < vals.length; i++) {
+        if (i < windowSize - 1) {
+          ma.push(null);
+        } else {
+          let sum = 0;
+          for (let j = 0; j < windowSize; j++) sum += vals[i - j];
+          ma.push(+(sum / windowSize).toFixed(2));
+        }
+      }
+      return ma;
+    }
+
+    const maHanbit = calcMA(hanbitVals);
+    const maMirae = calcMA(miraeVals);
+    const maSaebom = calcMA(saebomVals);
+
+    function initTimeSeriesChart() {
+      const ctx = document.getElementById('chart2').getContext('2d');
+      charts[2] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: '한빛테크 실제', data: hanbitVals, borderColor: 'rgba(37, 99, 235, 0.4)', borderWidth: 1.5, pointRadius: 1 },
+            { label: '한빛테크 (12-MA 추세선)', data: maHanbit, borderColor: '#2563eb', borderWidth: 3, pointRadius: 0 },
+            { label: '미래솔루션 실제', data: miraeVals, borderColor: 'rgba(217, 119, 6, 0.4)', borderWidth: 1.5, pointRadius: 1 },
+            { label: '미래솔루션 (12-MA 추세선)', data: maMirae, borderColor: '#d97706', borderWidth: 3, pointRadius: 0 },
+            { label: '새봄산업 실제', data: saebomVals, borderColor: 'rgba(225, 29, 72, 0.4)', borderWidth: 1.5, pointRadius: 1 },
+            { label: '새봄산업 (12-MA 추세선)', data: maSaebom, borderColor: '#e11d48', borderWidth: 3, pointRadius: 0 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: { y: { title: { display: true, text: '월매출 (억원)' } } }
+        }
+      });
+    }
+
+    function updateTimeSeriesChart() {
+      const mode = document.getElementById('seriesCompanySelect').value;
+      if (!charts[2]) return;
+
+      if (mode === 'all') {
+        charts[2].data.datasets = [
+          { label: '한빛테크 실제', data: hanbitVals, borderColor: 'rgba(37, 99, 235, 0.35)', borderWidth: 1.5, pointRadius: 1 },
+          { label: '한빛테크 (12-MA)', data: maHanbit, borderColor: '#2563eb', borderWidth: 3, pointRadius: 0 },
+          { label: '미래솔루션 실제', data: miraeVals, borderColor: 'rgba(217, 119, 6, 0.35)', borderWidth: 1.5, pointRadius: 1 },
+          { label: '미래솔루션 (12-MA)', data: maMirae, borderColor: '#d97706', borderWidth: 3, pointRadius: 0 },
+          { label: '새봄산업 실제', data: saebomVals, borderColor: 'rgba(225, 29, 72, 0.35)', borderWidth: 1.5, pointRadius: 1 },
+          { label: '새봄산업 (12-MA)', data: maSaebom, borderColor: '#e11d48', borderWidth: 3, pointRadius: 0 }
+        ];
+      } else if (mode === 'hanbit') {
+        charts[2].data.datasets = [
+          { label: '한빛테크 월매출 원계열', data: hanbitVals, borderColor: 'rgba(37, 99, 235, 0.5)', backgroundColor: 'rgba(37, 99, 235, 0.05)', fill: true, borderWidth: 2, pointRadius: 2.5 },
+          { label: '한빛테크 12개월 이동평균선(MA)', data: maHanbit, borderColor: '#2563eb', borderWidth: 3.5, pointRadius: 0 }
+        ];
+      } else if (mode === 'mirae') {
+        charts[2].data.datasets = [
+          { label: '미래솔루션 월매출 원계열', data: miraeVals, borderColor: 'rgba(217, 119, 6, 0.5)', backgroundColor: 'rgba(217, 119, 6, 0.05)', fill: true, borderWidth: 2, pointRadius: 2.5 },
+          { label: '미래솔루션 12개월 이동평균선(MA)', data: maMirae, borderColor: '#d97706', borderWidth: 3.5, pointRadius: 0 }
+        ];
+      } else if (mode === 'saebom') {
+        charts[2].data.datasets = [
+          { label: '새봄산업 월매출 원계열', data: saebomVals, borderColor: 'rgba(225, 29, 72, 0.5)', backgroundColor: 'rgba(225, 29, 72, 0.05)', fill: true, borderWidth: 2, pointRadius: 2.5 },
+          { label: '새봄산업 12개월 이동평균선(MA)', data: maSaebom, borderColor: '#e11d48', borderWidth: 3.5, pointRadius: 0 }
+        ];
+      }
+      charts[2].update();
+    }
+
+    // Initialize Icons and Default Chart on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      initChart(1);
+    });
+  </script>
+</body>
+</html>
